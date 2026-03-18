@@ -1,0 +1,191 @@
+/* Reset básico e Fontes */
+:root {
+  --primary: #6366f1; /* Um roxo moderno (Indigo) */
+  --primary-dark: #4f46e5;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --bg-color: #f3f4f6;
+  --card-bg: #ffffff;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --radius: 16px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Container Principal (Simula um telemóvel) */
+.app-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
+/* Títulos */
+h1, h2, h3 {
+  margin: 0;
+  font-weight: 700;
+  color: #111827;
+}
+
+h1 { font-size: 1.5rem; margin-bottom: 5px; }
+h2 { font-size: 1.25rem; margin-bottom: 15px; }
+h3 { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 10px; }
+
+/* Botões Modernos */
+button {
+  border: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--primary);
+  color: white;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover { background-color: var(--primary-dark); }
+.btn-primary:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+
+.btn-profile {
+  width: 100%;
+  padding: 20px;
+  margin-bottom: 12px;
+  background-color: var(--card-bg);
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius);
+  text-align: left;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow);
+}
+
+.btn-profile:hover { border-color: var(--primary); transform: translateY(-2px); }
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+}
+
+.btn-icon:hover { background-color: #e5e7eb; color: var(--text-main); }
+.btn-icon.edit:hover { background-color: #dbeafe; color: var(--primary); }
+.btn-icon.delete:hover { background-color: #fee2e2; color: var(--danger); }
+.btn-icon.magic { background-color: #f3e8ff; color: #9333ea; }
+
+/* Cartões (Cards) */
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+  border: 1px solid transparent;
+}
+
+.card-highlight {
+  border-left: 5px solid var(--primary);
+}
+
+/* Inputs Bonitos */
+input, select {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: #f9fafb;
+  transition: border-color 0.2s;
+  box-sizing: border-box; /* Importante para não sair da caixa */
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: white;
+}
+
+/* Barra de Progresso */
+.progress-container {
+  background-color: #e5e7eb;
+  border-radius: 999px;
+  height: 28px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-text {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  text-align: center;
+  line-height: 28px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #374151;
+  text-shadow: 0 0 2px rgba(255,255,255,0.8);
+}
+
+/* Área de Upload */
+.upload-area {
+  border: 2px dashed #d1d5db;
+  border-radius: var(--radius);
+  padding: 30px;
+  text-align: center;
+  background-color: #f9fafb;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upload-area:hover {
+  border-color: var(--primary);
+  background-color: #eef2ff;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}

@@ -1,0 +1,192 @@
+/* --- VARIÁVEIS E BASE --- */
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --bg-color: #f3f4f6;
+  --card-bg: #ffffff;
+  --text-main: #1f2937;
+  --radius: 16px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- LAYOUTS --- */
+
+/* 1. Layout Centrado (Login / Criar Perfil) */
+.layout-centered {
+  max-width: 450px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+/* 2. Layout Dashboard (Onde a magia acontece) */
+.dashboard-grid {
+  max-width: 1200px; /* Mais largo no Desktop */
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  gap: 30px;
+  /* Por defeito (telemóvel) é 1 coluna */
+  grid-template-columns: 1fr; 
+}
+
+/* --- MODO DESKTOP (Ecrãs > 800px) --- */
+@media (min-width: 800px) {
+  .dashboard-grid {
+    /* 350px para a esquerda, o resto para a direita */
+    grid-template-columns: 350px 1fr; 
+    align-items: start; /* Para a barra lateral não esticar */
+  }
+
+  /* O painel da esquerda fica "preso" enquanto fazes scroll */
+  .sidebar {
+    position: sticky;
+    top: 20px;
+  }
+}
+
+/* --- COMPONENTES --- */
+h1, h2, h3 { margin: 0 0 10px 0; color: #111827; }
+button { border: none; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+button:active { transform: scale(0.98); }
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 15px;
+}
+
+.btn-primary {
+  width: 100%; padding: 14px;
+  background: var(--primary); color: white;
+  border-radius: var(--radius); font-weight: 600;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+
+.btn-profile {
+  width: 100%; padding: 15px; margin-bottom: 10px;
+  background: white; border: 1px solid #e5e7eb; border-radius: var(--radius);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 1rem; box-shadow: var(--shadow);
+}
+.btn-profile:hover { border-color: var(--primary); }
+
+.btn-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: #f3f4f6; color: #6b7280; margin-left: 5px;
+}
+.btn-icon:hover { background: #e5e7eb; color: black; }
+
+/* Upload Area */
+.upload-area {
+  border: 2px dashed #d1d5db; border-radius: var(--radius);
+  padding: 30px; text-align: center; background: #f9fafb;
+  margin-bottom: 20px; cursor: pointer; transition: all 0.2s;
+}
+.upload-area:hover { border-color: var(--primary); background: #eef2ff; }
+
+/* Inputs */
+input, select {
+  width: 100%; padding: 12px; border: 2px solid #e5e7eb;
+  border-radius: 10px; margin-bottom: 10px; box-sizing: border-box;
+}
+input:focus, select:focus { outline: none; border-color: var(--primary); }
+
+/* Barra Progresso */
+.progress-bg { background: #e5e7eb; border-radius: 99px; height: 24px; position: relative; overflow: hidden; margin-top: 5px; }
+.progress-fill { height: 100%; transition: width 0.5s; }
+.progress-text { position: absolute; width: 100%; top: 0; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.8rem; color: #333; }
+
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  padding-bottom: env(safe-area-inset-bottom); /* Para iPhones novos */
+}
+
+/* Espaço para o conteúdo não ficar escondido atrás da barra */
+.app-content {
+  padding-bottom: 90px; /* Altura da navbar + folga */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #9ca3af;
+  padding: 8px;
+  width: 100%;
+}
+
+.nav-item.active {
+  color: #6366f1; /* Cor primária */
+}
+
+.nav-icon { font-size: 1.5rem; }
+.nav-label { font-size: 0.75rem; font-weight: 600; }
+
+/* --- VERSÃO DESKTOP (Ecrãs maiores que 800px) --- */
+@media (min-width: 800px) {
+  .navbar {
+    top: 0;
+    left: 0;
+    width: 250px; /* Largura da barra lateral */
+    height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 40px;
+    border-top: none;
+    border-right: 1px solid #e5e7eb;
+    gap: 10px;
+  }
+
+  .nav-item {
+    flex-direction: row; /* Ícone ao lado do texto */
+    padding: 15px 30px;
+    gap: 15px;
+    width: 100%;
+    transition: background 0.2s;
+  }
+
+  .nav-item:hover { background: #f3f4f6; }
+  .nav-item.active { background: #e0e7ff; border-right: 4px solid #6366f1; }
+
+  .nav-icon { font-size: 1.2rem; }
+  .nav-label { font-size: 1rem; }
+
+  /* Empurrar o conteúdo para a direita no Desktop */
+  .app-content {
+    margin-left: 250px; /* Mesma largura da navbar */
+    padding: 40px;
+    padding-bottom: 40px;
+  }
+}
