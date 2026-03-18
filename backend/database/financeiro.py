@@ -122,6 +122,17 @@ def listar_despesas_fixas(usuario_id):
     res = cursor.fetchall(); conn.close()
     return res
 
+def editar_despesa_fixa(id_despesa, descricao, valor, dia, meses):
+    conn = conectar_bd() # Usa a tua função de ligação
+    cursor = conn.cursor()
+    cursor.execute("""
+                   UPDATE despesas_fixas
+                   SET descricao = ?, valor = ?, dia = ?, meses = ?
+                   WHERE id = ?
+                   """, (descricao, valor, dia, meses, id_despesa))
+    conn.commit()
+    conn.close()
+
 def remover_despesa_fixa(id_despesa):
     conn = get_connection(); cursor = conn.cursor()
     cursor.execute("DELETE FROM despesas_fixas WHERE id = %s", (id_despesa,))

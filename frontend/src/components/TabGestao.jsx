@@ -10,6 +10,10 @@ export default function TabGestao({ despesasFixas, fixasPagas, toggleFixaPaga, r
     const [lendoTalao, setLendoTalao] = useState(false);
     const [erroUpload, setErroUpload] = useState(null);
 
+    // --- ESTADOS PARA CONTAS FIXAS ---
+    const [novaFixa, setNovaFixa] = useState({ descricao: '', valor: '', dia: 1, meses: '' });
+    const [editandoFixaId, setEditandoFixaId] = useState(null);
+
     // --- HELPER: Extrair números de strings ---
     const extrairNumero = (str) => {
         if (!str) return 1;
@@ -176,6 +180,52 @@ export default function TabGestao({ despesasFixas, fixasPagas, toggleFixaPaga, r
         }
     };
 
+    // --- FUNÇÕES PARA CONTAS FIXAS ---
+    const handleSalvarFixa = async () => {
+        if (!novaFixa.descricao || !novaFixa.valor) {
+            alert("A descrição e o valor são obrigatórios.");
+            return;
+        }
+        try {
+            if (editandoFixaId) {
+                // Editar (PUT)
+                await axios.put(`${API_URL}/financas/fixas`, {
+                    id: editandoFixaId,
+                    ...novaFixa,
+                    usuario_id: usuario.id
+                });
+            } else {
+                // Criar (POST)
+                await axios.post(`${API_URL}/financas/fixas`, {
+                    ...novaFixa,
+                    usuario_id: usuario.id
+                });
+            }
+            // Limpa o formulário e recarrega
+            setNovaFixa({ descricao: '', valor: '', dia: 1, meses: '' });
+            setEditandoFixaId(null);
+            carregarDados();
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao guardar despesa fixa.");
+        }
+    };
+
+    const iniciarEdicaoFixa = (f) => {
+        setEditandoFixaId(f.id);
+        setNovaFixa({
+            descricao: f.descricao,
+            valor: f.valor,
+            dia: f.dia || 1,
+            meses: f.meses || ''
+        });
+    };
+
+    const cancelarEdicao = () => {
+        setEditandoFixaId(null);
+        setNovaFixa({ descricao: '', valor: '', dia: 1, meses: '' });
+    };
+
     // --- RENDERIZAR O MODAL DE REVISÃO ---
     if (modoRevisao && dadosRevisao) {
         return (
@@ -295,29 +345,106 @@ export default function TabGestao({ despesasFixas, fixasPagas, toggleFixaPaga, r
     // --- RENDER: DASHBOARD NORMAL ---
     return (
         <div className="dashboard-grid animate-fade-in" style={{display:'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap:'30px'}}>
-            <div style={{marginBottom: '30px'}}>
-                <WidgetCasa usuarioId={usuario.id} API_URL={API_URL} />
-            </div>
-            {/* DESPESAS FIXAS */}
-            <div className="card">
-                <h3>📅 Contas Fixas</h3>
-                <div style={{marginBottom:'15px', maxHeight:'300px', overflowY:'auto'}}>
+
+            {/* DESPESAS FIXAS - AGORA EM CIMA E A OCUPAR A LINHA INTEIRA */}
+            <div className="card" style={{ gridColumn: '1 / -1' }}>
+                <h3 style={{marginTop:0, color:'#1e3a8a'}}>📅 Contas Fixas</h3>
+
+                {/* FORMULÁRIO ADICIONAR / EDITAR COM LABELS */}
+                <div style={{marginBottom: '20px', padding: '15px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0'}}>
+                    <div style={{display: 'flex', gap: '15px', marginBottom: '15px', flexWrap: 'wrap'}}>
+
+                        {/* INPUT: DESCRIÇÃO */}
+                        <div style={{flex: 1, minWidth: '150px', display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                            <label style={{fontSize: '0.85rem', color: '#475569', fontWeight: 'bold'}}>Descrição</label>
+                            <input
+                                type="text"
+                                placeholder="Ex: Eletricidade"
+                                value={novaFixa.descricao}
+                                onChange={(e) => setNovaFixa({...novaFixa, descricao: e.target.value})}
+                                style={{padding: '8px', borderRadius:'4px', border:'1px solid #cbd5e1'}}
+                            />
+                        </div>
+
+                        {/* INPUT: VALOR */}
+                        <div style={{width: '100px', display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                            <label style={{fontSize: '0.85rem', color: '#475569', fontWeight: 'bold'}}>Valor (€)</label>
+                            <input
+                                type="number"
+                                placeholder="0.00"
+                                value={novaFixa.valor}
+                                onChange={(e) => setNovaFixa({...novaFixa, valor: e.target.value})}
+                                style={{padding: '8px', borderRadius:'4px', border:'1px solid #cbd5e1'}}
+                            />
+                        </div>
+
+                        {/* INPUT: DIA */}
+                        <div style={{width: '80px', display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                            <label style={{fontSize: '0.85rem', color: '#475569', fontWeight: 'bold'}}>Dia</label>
+                            <input
+                                type="number"
+                                placeholder="Ex: 1"
+                                title="Dia do mês"
+                                value={novaFixa.dia}
+                                onChange={(e) => setNovaFixa({...novaFixa, dia: e.target.value})}
+                                style={{padding: '8px', borderRadius:'4px', border:'1px solid #cbd5e1'}}
+                            />
+                        </div>
+
+                        {/* INPUT: MESES */}
+                        <div style={{flex: 1, minWidth: '180px', display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                            <label style={{fontSize: '0.85rem', color: '#475569', fontWeight: 'bold'}}>Meses Específicos</label>
+                            <input
+                                type="text"
+                                placeholder="Ex: 1,7 (Vazio = todos os meses)"
+                                value={novaFixa.meses}
+                                onChange={(e) => setNovaFixa({...novaFixa, meses: e.target.value})}
+                                style={{padding: '8px', borderRadius:'4px', border:'1px solid #cbd5e1'}}
+                            />
+                        </div>
+                    </div>
+
+                    {/* BOTÕES DE AÇÃO DO FORMULÁRIO */}
+                    <div style={{display: 'flex', gap: '10px'}}>
+                        <button onClick={handleSalvarFixa} style={{flex: 1, padding: '10px', background: editandoFixaId ? '#eab308' : '#2563eb', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight:'bold', transition: 'background 0.2s'}}>
+                            {editandoFixaId ? '💾 Atualizar Despesa' : '➕ Adicionar Nova Despesa'}
+                        </button>
+                        {editandoFixaId && (
+                            <button onClick={cancelarEdicao} style={{padding: '10px 20px', background: '#94a3b8', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight:'bold', transition: 'background 0.2s'}}>
+                                Cancelar
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* LISTA DE CONTAS */}
+                <div style={{marginBottom:'15px', maxHeight:'250px', overflowY:'auto'}}>
                     {despesasFixas.map(f => (
-                        <div key={f.id} style={{display:'flex', justifyContent:'space-between', padding:'8px', borderBottom:'1px solid #eee'}}>
+                        <div key={f.id} style={{display:'flex', justifyContent:'space-between', padding:'10px 8px', borderBottom:'1px solid #f1f5f9', alignItems:'center'}}>
                             <label style={{flex:1, cursor:'pointer', display:'flex', alignItems:'center'}}>
-                                <input type="checkbox" checked={!!fixasPagas[f.id]} onChange={() => toggleFixaPaga(f)} style={{width: '10%',marginRight:'10px'}} />
-                                <span style={{textDecoration: fixasPagas[f.id]?'line-through':'none', color: fixasPagas[f.id]?'#999':'#000'}}>{f.descricao}</span>
+                                <input type="checkbox" checked={!!fixasPagas[f.id]} onChange={() => toggleFixaPaga(f)} style={{marginRight:'12px', transform: 'scale(1.2)'}} />
+                                <span style={{textDecoration: fixasPagas[f.id]?'line-through':'none', color: fixasPagas[f.id]?'#94a3b8':'#334155', fontWeight: fixasPagas[f.id]?'normal':'500'}}>{f.descricao}</span>
                             </label>
-                            <strong style={{color: fixasPagas[f.id]?'#999':'#000'}}>{f.valor}€</strong>
-                            <button onClick={()=>removerFixa(f.id)} style={{border:'none', background:'none', color:'#ef4444', cursor:'pointer', marginLeft:'10px'}}>✕</button>
+                            <strong style={{color: fixasPagas[f.id]?'#94a3b8':'#0f172a', marginRight: '20px', minWidth: '60px', textAlign: 'right'}}>{f.valor}€</strong>
+
+                            {/* BOTÕES DE AÇÃO NA LISTA */}
+                            <div style={{display:'flex', gap:'12px'}}>
+                                <button onClick={()=>iniciarEdicaoFixa(f)} style={{border:'none', background:'none', cursor:'pointer', fontSize:'1.1rem'}} title="Editar">✏️</button>
+                                <button onClick={()=>removerFixa(f.id)} style={{border:'none', background:'none', color:'#ef4444', cursor:'pointer', fontSize:'1.1rem'}} title="Remover">✕</button>
+                            </div>
                         </div>
                     ))}
                 </div>
-                {despesasFixas.length === 0 && <p style={{color:'#999', fontSize:'0.9rem'}}>Nenhuma conta fixa adicionada.</p>}
+                {despesasFixas.length === 0 && <p style={{color:'#94a3b8', fontSize:'0.9rem', textAlign:'center', padding: '10px'}}>Nenhuma conta fixa.</p>}
+            </div>
+
+            {/* WIDGET CASA */}
+            <div style={{marginBottom: '30px'}}>
+                <WidgetCasa usuarioId={usuario.id} API_URL={API_URL} />
             </div>
 
             {/* SCANNER */}
-            <div className="card" style={{border: '2px solid #2563eb', background:'#f8fafc'}}>
+            <div className="card" style={{border: '2px solid #2563eb', background:'#f8fafc', marginBottom: '30px'}}>
                 <h3 style={{color:'#1e3a8a', marginTop:0}}>🧾 Scanner Inteligente</h3>
                 <p style={{color:'#64748b', fontSize:'0.9rem'}}>Carrega uma foto ou PDF do talão (Lidl, Continente, etc).</p>
 
@@ -344,6 +471,7 @@ export default function TabGestao({ despesasFixas, fixasPagas, toggleFixaPaga, r
                 )}
                 {erroUpload && <div style={{marginTop:'15px', padding:'10px', background:'#fee2e2', color:'#b91c1c', borderRadius:'6px', fontSize:'0.9rem', textAlign:'center'}}>⚠️ {erroUpload}</div>}
             </div>
+
         </div>
     )
 }

@@ -51,25 +51,38 @@ def contas_rota():
 def categorias_rota():
     return jsonify(listar_categorias())
 
-@financas_bp.route('/fixas', methods=['GET', 'POST', 'DELETE'])
+@financas_bp.route('/fixas', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def fixas_rota():
     if request.method == 'GET':
         return jsonify(listar_despesas_fixas(request.args.get('usuario_id')))
 
     if request.method == 'POST':
         d = request.json
-        # O campo 'meses' vem do frontend (ex: "5" ou "1,7" ou null)
         adicionar_despesa_fixa(
             d['usuario_id'],
             d['descricao'],
             float(d['valor']),
             int(d.get('dia', 1)),
-            d.get('meses') # <--- IMPORTANTE: Passa os meses específicos para a BD
+            d.get('meses')
+        )
+        return jsonify({"msg": "OK"})
+
+    if request.method == 'PUT':
+        d = request.json
+        # Certifica-te que tens esta função no database/financeiro.py
+        editar_despesa_fixa(
+            d['id'],
+            d['descricao'],
+            float(d['valor']),
+            int(d.get('dia', 1)),
+            d.get('meses')
         )
         return jsonify({"msg": "OK"})
 
     if request.method == 'DELETE':
-        remover_despesa_fixa(request.args.get('id'))
+        # Se for DELETE através de axios.delete, normalmente vem em params (args)
+        id_remover = request.args.get('id')
+        remover_despesa_fixa(id_remover)
         return jsonify({"msg": "OK"})
 
     return None
