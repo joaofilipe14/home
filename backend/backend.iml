@@ -4,8 +4,12 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/assets/diarios_rp" />
+      <excludeFolder url="file://$MODULE_DIR$/venv/Include" />
+      <excludeFolder url="file://$MODULE_DIR$/venv/Lib" />
+      <excludeFolder url="file://$MODULE_DIR$/venv/Scripts" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.14 (home)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.14 (ai-nutrition-agent)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

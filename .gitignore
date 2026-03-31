@@ -1,4 +1,4 @@
 backend/.env
 .idea
 imagens
-backend/assets/*
+backend/assets

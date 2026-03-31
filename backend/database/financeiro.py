@@ -227,10 +227,12 @@ def obter_resumo_anual(usuario_id):
             # 1. Somar Despesas Fixas que caem neste mês 'i'
             soma_fixas = 0
             for valor, meses_str in todas_fixas:
-                if meses_str is None: # Mensal
+                # Se for None ou uma string vazia (ex: ""), consideramos Mensal
+                if not meses_str or str(meses_str).strip() == "":
                     soma_fixas += float(valor)
-                else: # Sazonal (ex: "4")
-                    lista_meses = [int(x) for x in meses_str.split(',')]
+                else: # Sazonal (ex: "4" ou "1, 6")
+                    # Divide pelas vírgulas, limpa os espaços e ignora se vier vazio
+                    lista_meses = [int(x.strip()) for x in str(meses_str).split(',') if x.strip().isdigit()]
                     if i in lista_meses:
                         soma_fixas += float(valor)
 

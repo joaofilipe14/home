@@ -422,7 +422,7 @@ export default function TabGestao({ despesasFixas, fixasPagas, toggleFixaPaga, r
                     {despesasFixas.map(f => (
                         <div key={f.id} style={{display:'flex', justifyContent:'space-between', padding:'10px 8px', borderBottom:'1px solid #f1f5f9', alignItems:'center'}}>
                             <label style={{flex:1, cursor:'pointer', display:'flex', alignItems:'center'}}>
-                                <input type="checkbox" checked={!!fixasPagas[f.id]} onChange={() => toggleFixaPaga(f)} style={{marginRight:'12px', transform: 'scale(1.2)'}} />
+                                <input type="checkbox" checked={!!fixasPagas[f.id]} onChange={() => toggleFixaPaga(f)} style={{marginRight:'12px', width: '14px', transform: 'scale(1.2)'}} />
                                 <span style={{textDecoration: fixasPagas[f.id]?'line-through':'none', color: fixasPagas[f.id]?'#94a3b8':'#334155', fontWeight: fixasPagas[f.id]?'normal':'500'}}>{f.descricao}</span>
                             </label>
                             <strong style={{color: fixasPagas[f.id]?'#94a3b8':'#0f172a', marginRight: '20px', minWidth: '60px', textAlign: 'right'}}>{f.valor}€</strong>
